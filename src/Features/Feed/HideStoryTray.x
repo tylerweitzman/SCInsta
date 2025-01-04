@@ -4,7 +4,7 @@
 // Disable story data source
 %hook IGMainStoryTrayDataSource
 - (id)initWithUserSession:(id)arg1 {
-    if ([SCIManager getPref:@"hide_stories_tray"]) {
+    if (true) {
         NSLog(@"[SCInsta] Hiding story tray");
 
         return nil;

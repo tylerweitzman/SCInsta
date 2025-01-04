@@ -75,7 +75,7 @@ static NSArray *removeItemsInList(NSArray *list, BOOL isFeed) {
         }
 
         // Hide entire feed
-        if ([SCIManager getPref:@"hide_entire_feed"]) {
+        if (true) {
             if ([obj isKindOfClass:%c(IGPostCreationManager)] || [obj isKindOfClass:%c(IGMedia)] || [obj isKindOfClass:%c(IGEndOfFeedDemarcatorModel)] || [obj isKindOfClass:%c(IGSpinnerLabelViewModel)]) {
                 NSLog(@"[SCInsta] Hiding entire feed");
 
