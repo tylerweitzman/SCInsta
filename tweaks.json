@@ -1,0 +1,31 @@
+{
+  "BHInstagram": {
+    "app_url": "https://und3fy-my.sharepoint.com/personal/5decrypt_und3fy_onmicrosoft_com/_layouts/15/download.aspx?share=EaWzJ5Xp5vZCi7K_cyyJPIkB4IRDy94ACbn8l4OW-rKgtQ",
+    "app_package": "com.burbn.instagram",
+    "app_name": "Instagram",
+    "min_ios_version": "15.0",
+    "sdk_version": "iPhoneOS16.4.sdk"
+  },
+  "BHTikTok": {
+    "app_url": "https://und3fy-my.sharepoint.com/personal/4decrypt_und3fy_onmicrosoft_com/_layouts/15/download.aspx?share=EbFJAmlMTUZOsyUfuIDXzPgBNLqnMJWdxGIp4Ib2fBhwQQ",
+    "app_package": "com.zhsiliaoapp.musically",
+    "app_name": "TikTok",
+    "min_ios_version": "15.0",
+    "sdk_version": "iPhoneOS14.5.sdk"
+  },
+  "TikTokPlusPlus": {
+    "app_url": "https://und3fy-my.sharepoint.com/personal/4decrypt_und3fy_onmicrosoft_com/_layouts/15/download.aspx?share=EbFJAmlMTUZOsyUfuIDXzPgBNLqnMJWdxGIp4Ib2fBhwQQ",
+    "app_package": "com.zhsiliaoapp.musically",
+    "app_name": "TikTok",
+    "min_ios_version": "15.0",
+    "sdk_version": "iPhoneOS16.5.sdk"
+  },
+  "SCInsta": {
+    "app_url": "https://und3fy-my.sharepoint.com/personal/5decrypt_und3fy_onmicrosoft_com/_layouts/15/download.aspx?share=EaWzJ5Xp5vZCi7K_cyyJPIkB4IRDy94ACbn8l4OW-rKgtQ",
+    "app_package": "com.burbn.instagram",
+    "app_name": "Instagram",
+    "min_ios_version": "15.0",
+    "sdk_version": "iPhoneOS14.5.sdk",
+    "legacy": true
+  }
+}
