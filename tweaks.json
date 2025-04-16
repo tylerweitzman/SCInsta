@@ -20,6 +20,27 @@
     "min_ios_version": "15.0",
     "sdk_version": "iPhoneOS16.5.sdk"
   },
+  "BHTwitter": {
+      "app_url": "https://drive.usercontent.google.com/download?id=1ISN1jhyLdt2_PN1_p_ESoxsbvN5DRMz5&export=download&authuser=0&confirm=t&uuid=a17b7daf-f244-4bfe-990d-f92401f46fa2&at=APcmpoz6ov5xrcshJnut2yhvQzIN%3A1744760401648",
+      "app_package": "com.atebits.tweetie2",
+      "app_name": "X",
+      "min_ios_version": "15.0",
+      "sdk_version": "iPhoneOS16.5.sdk"
+  },
+  "BHLinkedin": {
+    "app_url": "https://und3fy-my.sharepoint.com/personal/5decrypt_und3fy_onmicrosoft_com/_layouts/15/download.aspx?share=EQV8OLXK0DBLiAfH8XcPw1EBVn71-q5blSsT2eI6A87W-A",
+    "app_package": "com.linkedin.LinkedIn",
+    "app_name": "Linkedin",
+    "min_ios_version": "15.0",
+    "sdk_version": "iPhoneOS16.5.sdk"
+  },
+  "Hinge": {
+    "app_url": "https://und3fy-my.sharepoint.com/personal/5decrypt_und3fy_onmicrosoft_com/_layouts/15/download.aspx?share=EQV8OLXK0DBLiAfH8XcPw1EBVn71-q5blSsT2eI6A87W-A",
+    "app_package": "co.hinge.mobile",
+    "app_name": "Hinge",
+    "min_ios_version": "15.0",
+    "sdk_version": "iPhoneOS16.5.sdk"
+  },
   "SCInsta": {
     "app_url": "https://und3fy-my.sharepoint.com/personal/5decrypt_und3fy_onmicrosoft_com/_layouts/15/download.aspx?share=EaWzJ5Xp5vZCi7K_cyyJPIkB4IRDy94ACbn8l4OW-rKgtQ",
     "app_package": "com.burbn.instagram",

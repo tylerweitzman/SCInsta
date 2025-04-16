@@ -238,9 +238,9 @@ cd "$PROJECT_ROOT"
 
 # Prepare App IPA
 echo -e "${YELLOW}Downloading $APP_NAME IPA...${NC}"
-mkdir -p packages
-if [ ! -f "packages/$APP_PACKAGE.ipa" ]; then
-    wget "$APP_URL" --progress=bar -O "packages/$APP_PACKAGE.ipa"
+mkdir -p packages_source
+if ! find packages_source -maxdepth 1 -type f -name "*${APP_PACKAGE}*.ipa" | grep -q .; then
+    wget "$APP_URL" --progress=bar -O "packages_source/$APP_PACKAGE.ipa"
 else
     echo "$APP_NAME IPA already exists, skipping download..."
 fi

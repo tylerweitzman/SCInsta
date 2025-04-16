@@ -86,7 +86,7 @@ if [ "$1" == "sideload" ]; then
     rm -rf .theos
 
     # Check for decrypted app IPA
-    ipaFile="$(find ./packages/*${APP_IDENTIFIER}*.ipa -type f -exec basename {} \;)"
+    ipaFile="$(find ./packages_source/*${APP_IDENTIFIER}*.ipa -type f -exec basename {} \;)"
     if [ -z "${ipaFile}" ]; then
         echo -e "${RED}./packages/${APP_IDENTIFIER}.ipa not found.\nPlease put a decrypted ${APP_NAME} IPA in its path.${NC}"
         exit 1
@@ -160,7 +160,7 @@ if [ "$1" == "sideload" ]; then
         fi
         
         echo -e "${GREEN}Using dylib: ${DYLIB_PATH}${NC}"
-        pyzule -i "packages/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f "$DYLIB_PATH" $EXTRA_DYLIBS -c 0 -m $MIN_IOS -du
+        pyzule -i "packages_source/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f "$DYLIB_PATH" $EXTRA_DYLIBS -c 0 -m $MIN_IOS -du
     fi
     
     echo -e "${GREEN}Done, we hope you enjoy ${TWEAK_NAME}!${NC}\n\nYou can find the ipa file at: $(pwd)/packages"
