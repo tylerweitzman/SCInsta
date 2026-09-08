@@ -96,9 +96,14 @@ if [ "$1" == "sideload" ]; then
 
     echo -e "${GREEN}Building ${TWEAK_NAME} tweak for sideloading (as IPA)${NC}"
 
-    # ponytail: optional per-tweak Info.plist merge (Hinge: iPad device family -> resizable window on macOS)
-    MERGE_PLIST=""
-    if [ -f "$TWEAK_DIR/merge.plist" ]; then MERGE_PLIST="-l $TWEAK_DIR/merge.plist"; fi
+    # ponytail: per-tweak Info.plist merge is OPT-IN. Off by default because it
+    # rewrites UIDeviceFamily to claim iPad, which changes app layout paths.
+    # Enable per build:  MERGE_PLIST=1 ./local_build.sh Hinge sideload
+    MERGE_PLIST_ARG=""
+    if [ -n "$MERGE_PLIST" ] && [ -f "$TWEAK_DIR/merge.plist" ]; then
+        MERGE_PLIST_ARG="-l $TWEAK_DIR/merge.plist"
+        echo -e "${YELLOW}Merging $TWEAK_DIR/merge.plist into Info.plist (MERGE_PLIST=1)${NC}"
+    fi
 
     # Check if building with dev mode
     if [ "$3" == "--dev" ]; then
@@ -125,7 +130,7 @@ if [ "$1" == "sideload" ]; then
     rm -f "packages/${TWEAK_NAME}-sideloaded.ipa"
     
     if [ "$IS_LEGACY_TWEAK" = "true" ]; then
-        pyzule -i "packages_source/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f .theos/obj/debug/SCInsta.dylib .theos/obj/debug/sideloadfix.dylib $FLEXPATH -c 0 -m $MIN_IOS $MERGE_PLIST -du ${VERSION_OVERRIDE:+-v "$VERSION_OVERRIDE"}
+        pyzule -i "packages_source/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f .theos/obj/debug/SCInsta.dylib .theos/obj/debug/sideloadfix.dylib $FLEXPATH -c 0 -m $MIN_IOS $MERGE_PLIST_ARG -du ${VERSION_OVERRIDE:+-v "$VERSION_OVERRIDE"}
     else
         # For other tweaks, determine the dylib name from the Makefile or control
         DYLIB_NAME="$(grep "TWEAK_NAME" "$TWEAK_DIR/Makefile" | cut -d "=" -f2 | tr -d ' ')"
@@ -194,7 +199,7 @@ if [ "$1" == "sideload" ]; then
         done
         
         echo -e "${GREEN}Including dylibs: ${DYLIB_FILES}${NC}"
-        pyzule -i "packages_source/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f $DYLIB_FILES -c 0 -m $MIN_IOS $MERGE_PLIST -du ${VERSION_OVERRIDE:+-v "$VERSION_OVERRIDE"}
+        pyzule -i "packages_source/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f $DYLIB_FILES -c 0 -m $MIN_IOS $MERGE_PLIST_ARG -du ${VERSION_OVERRIDE:+-v "$VERSION_OVERRIDE"}
     fi
     
     echo -e "${GREEN}Done, we hope you enjoy ${TWEAK_NAME}!${NC}\n\nYou can find the ipa file at: $(pwd)/packages"
