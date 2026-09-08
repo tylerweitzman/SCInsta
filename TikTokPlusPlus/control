@@ -1,0 +1,9 @@
+Package: com.raulsaeed.bhtiktok++
+Name: BHTikTok++
+Version: 1.5
+Architecture: iphoneos-arm
+Description: An awesome tweak for TikTok!
+Maintainer: raul saeed
+Author: raul saeed
+Section: Tweaks
+Depends: mobilesubstrate

@@ -1,0 +1,25 @@
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+@interface BHIManager: NSObject
++ (BOOL)hideAds;
++ (BOOL)downloadVideos;
++ (BOOL)profileImageSave;
++ (BOOL)removeSuggestedPost;
++ (BOOL)showLikeCount;
++ (BOOL)likeConfirmation;
++ (BOOL)followConfirmation;
++ (BOOL)copyDecription;
++ (BOOL)copyBio;
++ (BOOL)Padlock;
++ (BOOL)keepDeletedMessage;
++ (BOOL)disableAutoAdvance;
++ (BOOL)hideLastSeen;
++ (BOOL)noScreenShotAlert;
++ (BOOL)unlimtedReply;
++ (BOOL)noSeenReceipt;
++ (void)showSaveVC:(id)item;
++ (void)cleanCache;
++ (BOOL)isEmpty:(NSURL *)url;
++ (NSString *)getDownloadingPersent:(float)per;
+@end
