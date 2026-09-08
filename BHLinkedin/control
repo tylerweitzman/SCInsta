@@ -1,0 +1,9 @@
+Package: com.tylerweitzman.bhlinkedin
+Name: BHLinkedin
+Version: 9.1.435
+Architecture: iphoneos-arm
+Description: An awesome tweak for Linkedin!
+Maintainer: Tyler Weitzman
+Author: tylerweitzman
+Section: Tweaks
+Depends: mobilesubstrate
