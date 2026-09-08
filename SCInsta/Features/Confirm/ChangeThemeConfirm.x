@@ -7,7 +7,9 @@
     if ([SCIManager getPref:@"change_direct_theme_confirm"]) {
         NSLog(@"[SCInsta] Confirm change direct theme triggered");
 
-        [SCIUtils showConfirmation:^(void) { %orig; }];
+        [SCIUtils showConfirmation:^(void) {
+            %orig;
+        }];
     } else {
         return %orig;
     }
@@ -16,7 +18,9 @@
     if ([SCIManager getPref:@"change_direct_theme_confirm"]) {
         NSLog(@"[SCInsta] Confirm change direct theme triggered");
 
-        [SCIUtils showConfirmation:^(void) { %orig; }];
+        [SCIUtils showConfirmation:^(void) {
+            %orig;
+        }];
     } else {
         return %orig;
     }
@@ -28,7 +32,9 @@
     if ([SCIManager getPref:@"change_direct_theme_confirm"]) {
         NSLog(@"[SCInsta] Confirm change direct theme triggered");
 
-        [SCIUtils showConfirmation:^(void) { %orig; }];
+        [SCIUtils showConfirmation:^(void) {
+            %orig;
+        }];
     } else {
         return %orig;
     }

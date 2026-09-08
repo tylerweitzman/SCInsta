@@ -4,7 +4,7 @@
 #import "Download.h"
 #import "Controllers/SettingsViewController.h"
 #import "Controllers/SecurityViewController.h"
-#import "../modules/JGProgressHUD/JGProgressHUD.h"
+#import "modules/JGProgressHUD/JGProgressHUD.h"
 
 @interface IGRootViewController : UIViewController
 - (void)addHandleLongPress; // new
@@ -126,7 +126,7 @@
 - (void)addHandleLongPress; // new
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender; // new
 @property (nonatomic, strong) JGProgressHUD *hud;
-@property(readonly, nonatomic) IGMedia *video;
+- (void)setPlaybackSpeed:(float)speed; // IG 445
 @end
 
 @interface IGSundialViewerVideoCell () <SCIDownloadDelegate>
@@ -457,4 +457,7 @@ typedef FLEXAlertAction * _Nonnull (^FLEXAlertActionHandler)(void(^handler)(NSAr
 - (void)showExplorer;
 - (void)hideExplorer;
 - (void)toggleExplorer;
+@end
+@interface IGMainAppSurfaceIntent : NSObject
+- (id)tabStringFromSurfaceIntent;
 @end

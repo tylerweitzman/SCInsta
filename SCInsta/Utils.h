@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "../modules/JGProgressHUD/JGProgressHUD.h"
+#import "modules/JGProgressHUD/JGProgressHUD.h"
 
 @interface SCIUtils : NSObject
 
@@ -20,5 +20,9 @@
 
 + (BOOL)showConfirmation:(void(^)(void))okHandler;
 + (void)prepareAlertPopoverIfNeeded:(UIAlertController*)alert inView:(UIView*)view;
+
+// Runtime
++ (id)getIvarForObj:(id)obj name:(const char *)name;
++ (void)setIvarForObj:(id)obj name:(const char *)name value:(id)value;
 
 @end

@@ -1,4 +1,4 @@
-#import "../../modules/JGProgressHUD/JGProgressHUD.h"
+#import "../modules/JGProgressHUD/JGProgressHUD.h"
 #import "../InstagramHeaders.h"
 #import "SecurityViewController.h"
 

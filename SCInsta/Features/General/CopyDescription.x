@@ -1,6 +1,6 @@
 #import "../../InstagramHeaders.h"
 #import "../../Manager.h"
-#import "../../../modules/JGProgressHUD/JGProgressHUD.h"
+#import "../../modules/JGProgressHUD/JGProgressHUD.h"
 
 %hook IGCoreTextView
 - (id)initWithWidth:(CGFloat)width {

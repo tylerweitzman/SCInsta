@@ -6,7 +6,9 @@
     if ([SCIManager getPref:@"voice_message_confirm"]) {
         NSLog(@"[SCInsta] DM audio message confirm triggered");
 
-        [SCIUtils showConfirmation:^(void) { %orig; }];
+        [SCIUtils showConfirmation:^(void) {
+            %orig;
+        }];
     } else {
         return %orig;
     }

@@ -1,3 +1,4 @@
+#import <objc/runtime.h>
 #import <UIKit/UIKit.h>
 #import "Utils.h"
 #import "InstagramHeaders.h"
@@ -59,5 +60,16 @@
         alert.popoverPresentationController.permittedArrowDirections = 0;
     }
 };
+
++ (id)getIvarForObj:(id)obj name:(const char *)name {
+    Ivar ivar = class_getInstanceVariable(object_getClass(obj), name);
+    if (!ivar) return nil;
+    return object_getIvar(obj, ivar);
+}
++ (void)setIvarForObj:(id)obj name:(const char *)name value:(id)value {
+    Ivar ivar = class_getInstanceVariable(object_getClass(obj), name);
+    if (!ivar) return;
+    object_setIvarWithStrongDefault(obj, ivar, value);
+}
 
 @end

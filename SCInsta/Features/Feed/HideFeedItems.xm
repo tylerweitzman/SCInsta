@@ -64,7 +64,7 @@ static NSArray *removeItemsInList(NSArray *list, BOOL isFeed) {
         }
 
         // Remove story tray
-        if (isFeed && [SCIManager getPref:@"hide_stories_tray"]) {
+        if (isFeed) {
             if ([obj isKindOfClass:%c(IGStoryDataController)]) {
                 NSLog(@"[SCInsta] Hiding stories tray");
 

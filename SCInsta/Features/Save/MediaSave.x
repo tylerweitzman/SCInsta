@@ -7,9 +7,7 @@
 %property (nonatomic, strong) JGProgressHUD *hud;
 - (id)initWithFrame:(CGRect)arg1 {
     id orig = %orig;
-    if ([SCIManager getPref:@"dw_videos"]) {
-        [orig addHandleLongPress];
-    }
+    [orig addHandleLongPress];
     return orig;
 }
 %new - (void)addHandleLongPress {
@@ -87,9 +85,7 @@
 %property (nonatomic, strong) JGProgressHUD *hud;
 - (id)initWithFrame:(CGRect)arg1 {
     id orig = %orig;
-    if ([SCIManager getPref:@"dw_videos"]) {
-        [orig addHandleLongPress];
-    }
+    [orig addHandleLongPress];
     return orig;
 }
 %new - (void)addHandleLongPress {
@@ -183,9 +179,7 @@
 %property (nonatomic, strong) JGProgressHUD *hud;
 - (id)initWithFrame:(CGRect)arg1 {
     id orig = %orig;
-    if ([SCIManager getPref:@"dw_videos"]) {
-        [orig addHandleLongPress];
-    }
+    [orig addHandleLongPress];
     return orig;
 }
 %new - (void)addHandleLongPress {
@@ -196,7 +190,13 @@
 %new - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"SCInsta Downloader" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-        NSArray *videoURLArray = [self.video.video.allVideoURLs allObjects];
+        IGMedia *media = [SCIUtils getIvarForObj:self name:"_mediaPassthrough"];
+        NSLog(@"[SCInsta] reel download: media=%@", media);
+        NSArray *videoURLArray = [[[media video] allVideoURLs] allObjects];
+        if (videoURLArray.count == 0) {
+            [SCIUtils showErrorHUDWithDescription:@"Could not extract video url from reel"];
+            return;
+        }
         
         for (int i = 0; i < [videoURLArray count]; i++) {
             [alert addAction:[UIAlertAction actionWithTitle:[NSString stringWithFormat:@"Download Video: Link %d (%@)", i + 1, i == 0 ? @"HD" : @"SD"] style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {

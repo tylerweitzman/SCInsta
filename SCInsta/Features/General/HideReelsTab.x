@@ -1,21 +1,48 @@
 #import "../../InstagramHeaders.h"
-#import "../../Manager.h"
+#import "../../Utils.h"
 
-// Hide reels tab
-%hook IGTabBar
-- (void)didMoveToWindow {
-    %orig;
+// Ported from upstream SCInsta Navigation.xm. Removes the CLIPS (reels) surface
+// from both the tab bar and the swipeable surface collection.
+static BOOL isSurfaceShown(IGMainAppSurfaceIntent *surface) {
+    NSString *tab = [surface respondsToSelector:@selector(tabStringFromSurfaceIntent)] ? [surface tabStringFromSurfaceIntent] : nil;
+    NSLog(@"[SCInsta] tab surface: %@ subtype=%@", tab, [surface valueForKey:@"_subtype"]);
 
-    if (true) {
-        NSMutableArray *tabButtons = [self valueForKey:@"_tabButtons"];
+    return ![tab isEqualToString:@"CLIPS"];
+}
 
-        NSLog(@"[SCInsta] Hiding reels tab");
+static NSArray *filterSurfacesArray(NSArray *surfaces) {
+    NSMutableArray *filtered = [NSMutableArray array];
 
-        if ([tabButtons count] == 5) {
-            [tabButtons removeObjectAtIndex:3];
-        }
-
-        [self.subviews[4] setHidden:YES];
+    for (IGMainAppSurfaceIntent *surface in surfaces) {
+        if (![surface isKindOfClass:%c(IGMainAppSurfaceIntent)]) break;
+        if (isSurfaceShown(surface)) [filtered addObject:surface];
     }
+
+    return filtered;
+}
+
+%hook IGTabBarControllerSwipeCoordinator
+- (id)initWithSurfaces:(id)surfaces parentViewController:(id)controller enableHaptics:(BOOL)haptics launcherSet:(id)set {
+    return %orig(filterSurfacesArray(surfaces), controller, haptics, set);
+}
+%end
+
+%hook IGTabBarController
+- (void)_layoutTabBar {
+    NSArray *surfaces = [SCIUtils getIvarForObj:self name:"_tabBarSurfaces"];
+    [SCIUtils setIvarForObj:self name:"_tabBarSurfaces" value:filterSurfacesArray(surfaces)];
+
+    %orig;
+}
+
+- (id)_buttonForTabBarSurface:(id)surface {
+    id button = %orig(surface);
+
+    if (!isSurfaceShown(surface)) {
+        NSLog(@"[SCInsta] Hiding reels tab");
+        return nil;
+    }
+
+    return button;
 }
 %end
