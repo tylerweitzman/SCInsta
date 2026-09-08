@@ -7,9 +7,10 @@ sent upstream.
 To review what changed upstream, add the remote once and diff against the
 recorded base commit:
 
+These remotes are already configured (`git remote`). Refresh and compare:
+
 ```bash
-git remote add up-bhinstagram https://github.com/BandarHL/BHInstagram
-git fetch up-bhinstagram
+git fetch --multiple up-bhinstagram up-bhtiktok up-bhtwitter up-tiktokpp up-scinsta
 git log --oneline cd7be91..up-bhinstagram/main      # new upstream commits
 git diff up-bhinstagram/main HEAD:BHInstagram        # upstream vs our copy
 ```
@@ -17,16 +18,16 @@ git diff up-bhinstagram/main HEAD:BHInstagram        # upstream vs our copy
 `git diff <tree-ish> <tree-ish>` works across remotes because everything shares
 one object store. Replace the tree on the right for other tweaks.
 
-| Tweak | Upstream | Vendored at (base commit) |
-|---|---|---|
-| SCInsta | github.com/SoCuul/SCInsta | primary project, heavily modified |
-| BHInstagram | github.com/BandarHL/BHInstagram | `cd7be9107881450426306bdc954a53bca97dd29a` |
-| BHTikTok | github.com/BandarHL/BHTikTok | `18b4477ee29581aa99d0851776a58b008b78ede9` |
-| TikTokPlusPlus | github.com/raulsaeed/BHTikTokPlusPlus | `af562bf9fc74185c299435b4af0a69ffe0d363f1` |
-| BHTwitter | github.com/BandarHL/BHTwitter | `acd1b84` |
-| BHLinkedin | scaffolded from BandarHL/BHTikTok | `2c0c815` |
-| Hinge | scaffolded from BandarHL/BHTikTok | `2c0c815` |
-| */libflex/FLEX | github.com/FLEXTool/FLEX | vendored per tweak; SCInsta at `079f2d8` |
+| Tweak | Remote | Branch | Vendored at (base commit) |
+|---|---|---|---|
+| SCInsta | `up-scinsta` SoCuul/SCInsta | main | primary project, heavily modified |
+| BHInstagram | `up-bhinstagram` BandarHL/BHInstagram | main | `cd7be9107881450426306bdc954a53bca97dd29a` |
+| BHTikTok | `up-bhtiktok` BandarHL/BHTikTok | main | `18b4477ee29581aa99d0851776a58b008b78ede9` (= upstream HEAD) |
+| TikTokPlusPlus | `up-tiktokpp` raulsaeed/BHTikTokPlusPlus | main | `af562bf9fc74185c299435b4af0a69ffe0d363f1` |
+| BHTwitter | `up-bhtwitter` BandarHL/BHTwitter | **master** | `acd1b84` |
+| BHLinkedin | scaffolded from BandarHL/BHTikTok | - | `2c0c815` |
+| Hinge | scaffolded from BandarHL/BHTikTok | - | `2c0c815` |
+| */libflex/FLEX | FLEXTool/FLEX | - | vendored per tweak; SCInsta at `079f2d8` |
 
 ## FLEX copies
 
