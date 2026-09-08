@@ -1,0 +1,9 @@
+Package: com.tylerweitzman.hinge
+Name: Hinge
+Version: 9.134
+Architecture: iphoneos-arm
+Description: Hinge tweak (FLEX + DeviceCheck/App Attest logging)
+Maintainer: Tyler Weitzman
+Author: tylerweitzman
+Section: Tweaks
+Depends: mobilesubstrate
