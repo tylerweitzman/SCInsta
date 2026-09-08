@@ -2,7 +2,7 @@
 
 # Exit on error
 set -e
-
+rm -rf .tweak_temp
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -126,6 +126,8 @@ else
     echo "Theos already exists, updating..."
     cd "$THEOS_DIR" && git pull && git submodule update --init --recursive
 fi
+# ponytail: pin Logos before 777925d, which eats everything after %orig on a line (breaks `[%orig mutableCopy]`, `foo(%orig)`)
+git -C "$THEOS_DIR/vendor/logos" checkout -q 31d2271
 
 # Setup SDK
 echo -e "${YELLOW}Setting up iOS SDK (${SDK_VERSION})...${NC}"
@@ -296,4 +298,15 @@ rm -f control
 rm -rf .tweak_temp
 
 echo -e "${GREEN}Build completed successfully!${NC}"
-echo -e "Output file: ${YELLOW}packages/${TWEAK_NAME}_${BUILD_TYPE}_v${TWEAK_VERSION}.ipa${NC}" 
+echo -e "Output file: ${YELLOW}packages/${TWEAK_NAME}_${BUILD_TYPE}_v${TWEAK_VERSION}.ipa${NC}"
+
+# if [ -e "packages/${TWEAK_NAME}_${BUILD_TYPE}_v${TWEAK_VERSION}.ipa" ]; then
+#   echo -e "${GREEN}Building the ${TWEAK_NAME} IPA...${NC}"
+#   cyan -i "packages/${TWEAK_NAME}_${BUILD_TYPE}_v${TWEAK_VERSION}.ipa" -o "packages/${TWEAK_NAME}-tweaked" --ignore-encrypted \
+#     -uwf ${TWEAK_DIR}/.theos/obj/debug/libbhFLEX.dylib \
+#     -uwf ${TWEAK_DIR}/.theos/obj/debug/FLEXall.dylib \
+#     ${TWEAK_DIR}/.theos/obj/debug/${TWEAK_DIR}.dylib
+#   echo -e '\033[1m\033[32mDone.\033[0m'
+# else
+#   echo -e "${RED}packages/${TWEAK_NAME}_${BUILD_TYPE}_v${TWEAK_VERSION}.ipa not found.${NC}"
+# fi

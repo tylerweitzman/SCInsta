@@ -3,6 +3,7 @@
 set -e
 
 CMAKE_OSX_ARCHITECTURES="arm64e;arm64"
+export THEOS="${THEOS:-$HOME/theos}"
 
 # Get the tweak name from the argument (directory name)
 TWEAK_DIR="${2:-BHInstagram}"  # Default to BHInstagram if not provided
@@ -20,7 +21,7 @@ if ! command -v jq &> /dev/null; then
 fi
 
 # Prerequisites for FLEX (only needed for old SCInsta)
-if [ "$TWEAK_DIR" = "SCInsta" ] && [ -z "$(ls -A modules/libflex/FLEX)" ]; then
+if [ "$TWEAK_DIR" = "SCInsta" ] && [ -z "$(ls -A SCInsta/modules/libflex/FLEX)" ]; then
     echo -e '\033[1m\033[0;31mFLEX submodule not found.\nPlease run the following command to checkout submodules:\n\n\033[0m    git submodule update --init --recursive'
     exit 1
 fi
@@ -46,6 +47,7 @@ if jq -e ".$TWEAK_DIR" "$CONFIG_FILE" &> /dev/null; then
     APP_IDENTIFIER=$(jq -r ".$TWEAK_DIR.app_package" "$CONFIG_FILE")
     APP_NAME=$(jq -r ".$TWEAK_DIR.app_name" "$CONFIG_FILE")
     MIN_IOS=$(jq -r ".$TWEAK_DIR.min_ios_version" "$CONFIG_FILE")
+    VERSION_OVERRIDE=$(jq -r ".$TWEAK_DIR.version_override // empty" "$CONFIG_FILE")
     
     # Check if this is a legacy tweak (like SCInsta)
     if jq -e ".$TWEAK_DIR.legacy" "$CONFIG_FILE" &> /dev/null; then
@@ -85,14 +87,18 @@ if [ "$1" == "sideload" ]; then
     make clean
     rm -rf .theos
 
-    # Check for decrypted app IPA
-    ipaFile="$(find ./packages_source/*${APP_IDENTIFIER}*.ipa -type f -exec basename {} \;)"
+    # ponytail: exact name first, else first glob match (several IPAs share the com.burbn.instagram prefix)
+    ipaFile="$(cd packages_source && { ls "${APP_IDENTIFIER}.ipa" 2>/dev/null || ls *"${APP_IDENTIFIER}"*.ipa 2>/dev/null; } | head -n1)"
     if [ -z "${ipaFile}" ]; then
         echo -e "${RED}./packages/${APP_IDENTIFIER}.ipa not found.\nPlease put a decrypted ${APP_NAME} IPA in its path.${NC}"
         exit 1
     fi
 
     echo -e "${GREEN}Building ${TWEAK_NAME} tweak for sideloading (as IPA)${NC}"
+
+    # ponytail: optional per-tweak Info.plist merge (Hinge: iPad device family -> resizable window on macOS)
+    MERGE_PLIST=""
+    if [ -f "$TWEAK_DIR/merge.plist" ]; then MERGE_PLIST="-l $TWEAK_DIR/merge.plist"; fi
 
     # Check if building with dev mode
     if [ "$3" == "--dev" ]; then
@@ -119,7 +125,7 @@ if [ "$1" == "sideload" ]; then
     rm -f "packages/${TWEAK_NAME}-sideloaded.ipa"
     
     if [ "$IS_LEGACY_TWEAK" = "true" ]; then
-        pyzule -i "packages/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f .theos/obj/debug/SCInsta.dylib .theos/obj/debug/sideloadfix.dylib $FLEXPATH -c 0 -m $MIN_IOS -du
+        pyzule -i "packages_source/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f .theos/obj/debug/SCInsta.dylib .theos/obj/debug/sideloadfix.dylib $FLEXPATH -c 0 -m $MIN_IOS $MERGE_PLIST -du ${VERSION_OVERRIDE:+-v "$VERSION_OVERRIDE"}
     else
         # For other tweaks, determine the dylib name from the Makefile or control
         DYLIB_NAME="$(grep "TWEAK_NAME" "$TWEAK_DIR/Makefile" | cut -d "=" -f2 | tr -d ' ')"
@@ -150,17 +156,45 @@ if [ "$1" == "sideload" ]; then
             fi
         fi
         
+        # Collect all dylib files
+        DYLIB_FILES="$DYLIB_PATH"
+        
         # Check if the tweak uses a sideloadfix
         if [ -f "$TWEAK_DIR/.theos/obj/debug/sideloadfix.dylib" ]; then
-            EXTRA_DYLIBS="$TWEAK_DIR/.theos/obj/debug/sideloadfix.dylib"
+            DYLIB_FILES="$DYLIB_FILES $TWEAK_DIR/.theos/obj/debug/sideloadfix.dylib"
         elif [ -f ".theos/obj/debug/sideloadfix.dylib" ]; then
-            EXTRA_DYLIBS=".theos/obj/debug/sideloadfix.dylib"
-        else
-            EXTRA_DYLIBS=""
+            DYLIB_FILES="$DYLIB_FILES .theos/obj/debug/sideloadfix.dylib"
         fi
         
-        echo -e "${GREEN}Using dylib: ${DYLIB_PATH}${NC}"
-        pyzule -i "packages_source/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f "$DYLIB_PATH" $EXTRA_DYLIBS -c 0 -m $MIN_IOS -du
+        # Check for FLEX dylibs
+        if [ -f "$TWEAK_DIR/.theos/obj/debug/FLEXall.dylib" ]; then
+            DYLIB_FILES="$DYLIB_FILES $TWEAK_DIR/.theos/obj/debug/FLEXall.dylib"
+        elif [ -f ".theos/obj/debug/FLEXall.dylib" ]; then
+            DYLIB_FILES="$DYLIB_FILES .theos/obj/debug/FLEXall.dylib"
+        fi
+        
+        if [ -f "$TWEAK_DIR/.theos/obj/debug/libbhFLEX.dylib" ]; then
+            DYLIB_FILES="$DYLIB_FILES $TWEAK_DIR/.theos/obj/debug/libbhFLEX.dylib"
+        elif [ -f ".theos/obj/debug/libbhFLEX.dylib" ]; then
+            DYLIB_FILES="$DYLIB_FILES .theos/obj/debug/libbhFLEX.dylib"
+        fi
+        
+        # Find any additional dylibs that might have been generated
+        for additional_dylib in $(find "$TWEAK_DIR/.theos/obj/debug" -maxdepth 1 -name "*.dylib" 2>/dev/null) $(find ".theos/obj/debug" -maxdepth 1 -name "*.dylib" 2>/dev/null); do
+            # Skip debug symbol files and architecture-specific variants
+            if [[ "$additional_dylib" == *".dSYM"* || "$additional_dylib" == */arm64/* || "$additional_dylib" == */arm64e/* || "$additional_dylib" == */armv7/* || "$additional_dylib" == */armv7s/* ]]; then
+                continue
+            fi
+            
+            # Check if this dylib is already in our list
+            if [[ ! "$DYLIB_FILES" == *"$additional_dylib"* ]]; then
+                echo -e "${GREEN}Found additional dylib: ${additional_dylib}${NC}"
+                DYLIB_FILES="$DYLIB_FILES $additional_dylib"
+            fi
+        done
+        
+        echo -e "${GREEN}Including dylibs: ${DYLIB_FILES}${NC}"
+        pyzule -i "packages_source/${ipaFile}" -o "packages/${TWEAK_NAME}-sideloaded.ipa" -f $DYLIB_FILES -c 0 -m $MIN_IOS $MERGE_PLIST -du ${VERSION_OVERRIDE:+-v "$VERSION_OVERRIDE"}
     fi
     
     echo -e "${GREEN}Done, we hope you enjoy ${TWEAK_NAME}!${NC}\n\nYou can find the ipa file at: $(pwd)/packages"

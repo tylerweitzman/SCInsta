@@ -49,3 +49,6 @@ packages
 
 .pyzule*
 dumps
+# Large downloaded IPAs (build inputs) and redundant backup
+packages_source
+old_BHLinkedin
